@@ -20,7 +20,7 @@ export default class Model {
         this.view = view;
     }
     getToDos() {
-        return this.toDos;
+        return this.toDos.map((toDo) => ({ ...toDo }));
     }
 
     save() {
@@ -44,17 +44,19 @@ export default class Model {
         return this.toDos.findIndex((toDo) => toDo.id === id);
     }
 
+    editToDo(id, values) {
+        Object.assign(this.toDos[this.findToDo(id)], values);
+        this.save();
+    }
+
     removeToDo(id) {
-        // const index = this.toDos.findIndex((toDo) => toDo.id === id);
         this.toDos.splice(this.findToDo(id), 1);
         this.save();
     }
 
     toggleCompleted(id) {
-        console.log(id)
-        // const index = this.findToDo(id);
-        // const toDo = this.toDos[index];
-        // toDo.completed = !toDo.completed;
-        // console.log(this.toDos);
+        const toDo = this.toDos[this.findToDo(id)];
+        toDo.completed = !toDo.completed;
+        this.save();
     }
 } 
