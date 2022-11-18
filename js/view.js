@@ -1,5 +1,6 @@
 import AddToDo from "../components/add-todo.js";
 import Modal from "../components/modal.js";
+import Filter from "../components/filter.js";
 
 export default class View {
     constructor() {
@@ -7,9 +8,11 @@ export default class View {
         this.table = document.getElementById('table');
         this.addToDoForm = new AddToDo();
         this.modal = new Modal();
+        this.filter = new Filter();
 
         this.addToDoForm.onClick((title, description) => this.addToDo(title, description));
         this.modal.onClick((id, values) => this.editToDo(id, values));
+        this.filter.onClick((filters) => this.filters(filters));
     }
     setModel(model) {
         this.model = model;
@@ -18,6 +21,31 @@ export default class View {
     render() {
         const toDos = this.model.getToDos();
         toDos.forEach((toDo) => this.createRow(toDo));
+    }
+
+    filters(filters) {
+        const { type, words } = filters;
+        const [, ...rows] = this.table.getElementsByTagName('tr');
+        for (const row of rows) {
+            const [title, description, completed] = row.children;
+            let shouldHide = false;
+
+            if (words) {
+                shouldHide = !title.innerText.includes(words) && !description.innerText.includes(words);
+            }
+            const shouldBeCompleted = type === 'completed';
+            const isCompleted = completed.children[0].checked;
+
+            if (type !== 'all' && shouldBeCompleted !== isCompleted) {
+                shouldHide = true;
+            }
+
+            if (shouldHide) {
+                row.classList.add('d-none');
+            } else {
+                row.classList.remove('d-none');
+            }
+        }
     }
 
     addToDo(title, description) {
@@ -72,7 +100,7 @@ export default class View {
             title: row.children[0].innerText,
             description: row.children[1].innerText,
             completed: row.children[2].children[0].checked
-    });
+        });
         row.children[3].appendChild(editBtn);
 
         const removeBtn = document.createElement('button');
