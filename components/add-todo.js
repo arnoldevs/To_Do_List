@@ -11,10 +11,15 @@ export default class AddToDo {
         this.btn.onclick = () => {
             if (title.value === '' || description.value === '') {
                 this.alert.show('Title and description are required');
-            } else {
-                this.alert.hide();
-                callback(this.title.value, this.description.value);
+                return;
             }
+            if (this.description.value.length > 100) {
+                this.alert.show('Description has exceeded 100 characters');
+                return;
+            }
+            this.alert.hide();
+            callback(this.title.value, this.description.value);
+
         }
     }
 }

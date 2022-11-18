@@ -16,6 +16,11 @@ export default class Modal {
                 this.alert.show('Title and description are required');
                 return;
             }
+            if (this.description.value.length > 100) {
+                this.alert.show('Description has exceeded 100 characters');
+                return;
+            }
+
             $('#modal').modal('toggle');
 
             callback(this.toDo.id, {

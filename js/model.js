@@ -35,7 +35,6 @@ export default class Model {
             completed: false
         }
         this.toDos.push(toDo);
-        console.log(this.toDos)
         this.save();
         return { ...toDo };
     }
